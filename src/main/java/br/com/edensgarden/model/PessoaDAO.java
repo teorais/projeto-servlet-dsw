@@ -9,10 +9,9 @@ public class PessoaDAO {
     private static final List<Pessoa> bancoDeDados = new ArrayList<>();
     private static final AtomicInteger sequence = new AtomicInteger(1);
 
-    // Bloco estático para popular a lista com alguns dados iniciais
     static {
-        bancoDeDados.add(new Pessoa(sequence.getAndIncrement(), "Ada Lovelace", "ada.lovelace@example.com"));
-        bancoDeDados.add(new Pessoa(sequence.getAndIncrement(), "Grace Hopper", "grace.hopper@example.com"));
+        bancoDeDados.add(new Pessoa(sequence.getAndIncrement(), "Pessoa Teste 1", "emaildeteste1@email.com"));
+        bancoDeDados.add(new Pessoa(sequence.getAndIncrement(), "Pessoa Teste 2", "emaildeteste2@email.com"));
     }
 
     public void adicionar(Pessoa pessoa) {
