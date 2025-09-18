@@ -1,7 +1,7 @@
 package br.com.edensgarden.controller;
 
 import br.com.edensgarden.model.Pessoa;
-import br.com.edensgarden.model.PessoaDAO;
+import br.com.edensgarden.model.PessoaRepository;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -15,7 +15,7 @@ import java.util.List;
 @WebServlet("/pessoas")
 public class PessoaServlet extends HttpServlet {
 
-    private PessoaDAO pessoaDAO = new PessoaDAO();
+    private PessoaRepository pessoaRepository = new PessoaRepository();
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response)
@@ -49,7 +49,7 @@ public class PessoaServlet extends HttpServlet {
     private void listarPessoas(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        List<Pessoa> listaDePessoas = pessoaDAO.listarTodos();
+        List<Pessoa> listaDePessoas = pessoaRepository.listarTodos();
         request.setAttribute("listaPessoas", listaDePessoas); // Envia a lista para o JSP
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("/views/listaPessoas.jsp");
@@ -63,7 +63,7 @@ public class PessoaServlet extends HttpServlet {
         String email = request.getParameter("email");
 
         Pessoa novaPessoa = new Pessoa(nome, email);
-        pessoaDAO.adicionar(novaPessoa);
+        pessoaRepository.adicionar(novaPessoa);
 
         // Redireciona o usuário de volta para a página de listagem
         response.sendRedirect("pessoas");
@@ -72,8 +72,8 @@ public class PessoaServlet extends HttpServlet {
     private void removerPessoa(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
-        int id = Integer.parseInt(request.getParameter("id"));
-        pessoaDAO.remover(id);
+        String id = request.getParameter("id");
+        pessoaRepository.remover(id);
 
         // Redireciona o usuário de volta para a página de listagem
         response.sendRedirect("pessoas");
