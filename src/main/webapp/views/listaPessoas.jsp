@@ -1,58 +1,119 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
 <%@ page import="br.com.edensgarden.model.Pessoa" %>
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Gerenciador de Pessoas</title>
+    <title>Lista de Pessoas</title>
     <style>
-        body { font-family: sans-serif; }
-        table { border-collapse: collapse; width: 60%; margin-top: 20px; }
-        th, td { border: 1px solid #dddddd; text-align: left; padding: 8px; }
-        th { background-color: #f2f2f2; }
-        .form-container { border: 1px solid #ccc; padding: 20px; width: 56%; }
+        /* Centraliza o conteúdo como um documento */
+        body {
+            font-family: sans-serif;
+            margin: 20px auto;
+            max-width: 800px;
+            padding: 0 10px;
+        }
+
+        /* Cabeçalho simples: Título na esq, Saudação na dir */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Formulário em linha simples */
+        .form-cadastro {
+            background: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"], input[type="email"] {
+            padding: 5px;
+            width: 300px;
+            margin-right: 10px;
+        }
+
+        input[type="submit"] {
+            padding: 6px 15px;
+            cursor: pointer;
+        }
+
+        /* Tabela padrão acadêmica */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #eee;
+        }
+
+        /* Feedback visual simples */
+        tr:hover { background-color: #f5f5f5; }
+
+        .btn-sair { color: red; text-decoration: none; margin-left: 5px; }
     </style>
 </head>
 <body>
 
-    <h2>Adicionar Nova Pessoa</h2>
+    <header>
+        <h2 style="margin: 0;">Gerenciamento de Pessoas</h2>
+        <div>
+            Logado como: <b>admin</b> | <a href="${pageContext.request.contextPath}/logout" class="btn-sair">Sair</a>
+        </div>
+    </header>
 
-    <div style="text-align: right; padding: 10px;">
-        Olá, <b>admin</b>! | <a href="${pageContext.request.contextPath}/logout">Sair</a>
-    </div>
-    <h2>Adicionar Nova Pessoa</h2>
-
-    <div class="form-container">
+    <div class="form-cadastro">
+        <h3>Nova Pessoa</h3>
         <form action="pessoas?acao=adicionar" method="post">
-            Nome: <input type="text" name="nome" required>
-            Email: <input type="email" name="email" required>
-            <input type="submit" value="Adicionar">
+            <input type="text" name="nome" placeholder="Nome" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="submit" value="Salvar">
         </form>
     </div>
 
-    <h2>Lista de Pessoas</h2>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h3 style="margin: 0;">Registros</h3>
+        <a href="pessoas?acao=relatorio" target="_blank" style="text-decoration: none; background-color: #28a745; color: white; padding: 5px 10px; border-radius: 4px; font-size: 14px;">Imprimir PDF</a>
+    </div>
     <table>
         <tr>
-            <th>#</th> <th>Nome</th>
+            <th style="width: 40px;">#</th>
+            <th>Nome</th>
             <th>Email</th>
-            <th>Ação</th>
+            <th style="width: 80px;">Opções</th>
         </tr>
         <%
             List<Pessoa> listaPessoas = (List<Pessoa>) request.getAttribute("listaPessoas");
-            if (listaPessoas != null) {
-                int contador = 1; // Criamos um contador visual começando em 1
+            if (listaPessoas != null && !listaPessoas.isEmpty()) {
+                int count = 1;
                 for (Pessoa p : listaPessoas) {
         %>
         <tr>
-            <td><%= contador++ %></td>
-
+            <td><%= count++ %></td>
             <td><%= p.getName() %></td>
             <td><%= p.getEmail() %></td>
-            <td>
-                <a href="pessoas?acao=remover&id=<%= p.getId() %>">Remover</a>
+            <td style="text-align: center;">
+                <a href="pessoas?acao=remover&id=<%= p.getId() %>" onclick="return confirm('Remover este item?')">Excluir</a>
             </td>
         </tr>
         <%
                 }
+            } else {
+        %>
+        <tr><td colspan="4" style="text-align: center;">Nenhum registro encontrado.</td></tr>
+        <%
             }
         %>
     </table>

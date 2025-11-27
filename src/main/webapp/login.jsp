@@ -1,35 +1,69 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Login - Gerenciador</title>
+    <title>Login</title>
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f0f2f5; }
-        .login-container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 300px; text-align: center; }
-        input[type="text"], input[type="password"] { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        input[type="submit"] { background-color: #007bff; color: white; border: none; padding: 10px; width: 100%; border-radius: 4px; cursor: pointer; }
-        input[type="submit"]:hover { background-color: #0056b3; }
-        .error { color: red; margin-bottom: 10px; font-size: 0.9em; }
-        .msg { color: green; margin-bottom: 10px; font-size: 0.9em; }
+        /* Centraliza verticalmente e horizontalmente */
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Caixa de login simples */
+        .login-box {
+            border: 1px solid #ccc;
+            padding: 30px;
+            width: 300px;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            box-sizing: border-box; /* Garante que o padding não estoure a largura */
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #ddd;
+            border: 1px solid #999;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        input[type="submit"]:hover { background-color: #ccc; }
+
+        .msg { margin-bottom: 15px; padding: 10px; font-size: 14px; }
+        .error { color: white; background-color: #d9534f; }
+        .success { color: #3c763d; background-color: #dff0d8; border: 1px solid #d6e9c6; }
     </style>
 </head>
 <body>
 
-<div class="login-container">
-    <h2>Acesso Restrito</h2>
+    <div class="login-box">
+        <h2 style="margin-top: 0;">Acesso ao Sistema</h2>
 
-    <% if (request.getParameter("error") != null) { %>
-        <div class="error">Usuário ou senha inválidos!</div>
-    <% } %>
-    <% if (request.getParameter("logout") != null) { %>
-        <div class="msg">Você saiu do sistema.</div>
-    <% } %>
+        <% if (request.getParameter("error") != null) { %>
+            <div class="msg error">Dados inválidos.</div>
+        <% } %>
 
-    <form action="login" method="post">
-        <input type="text" name="username" placeholder="Usuário (admin)" required>
-        <input type="password" name="password" placeholder="Senha (123456)" required>
-        <input type="submit" value="Entrar">
-    </form>
-</div>
+        <% if (request.getParameter("logout") != null) { %>
+            <div class="msg success">Logout efetuado.</div>
+        <% } %>
+
+        <form action="login" method="post">
+            <input type="text" name="username" placeholder="Usuário" required autofocus>
+            <input type="password" name="password" placeholder="Senha" required>
+            <input type="submit" value="Entrar">
+        </form>
+    </div>
 
 </body>
 </html>
