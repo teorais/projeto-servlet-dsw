@@ -1,70 +1,51 @@
 package br.com.edensgarden.model;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import br.com.edensgarden.util.JPAUtil;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.Collections;
+import javax.persistence.EntityManager;
 import java.util.List;
 
 public class PessoaRepository {
 
-    private static final String API_URL = "http://localhost:3000/pessoas";
-
-    private final HttpClient client = HttpClient.newHttpClient();
-    private final Gson gson = new Gson();
-
-    public List<Pessoa> listarTodos(){
-        try{
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(API_URL))
-                    .header("Accept", "application/json")
-                    .build();
-
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            Type tipoListaPessoas = new TypeToken<List<Pessoa>>(){}.getType();
-            return gson.fromJson(response.body(), tipoListaPessoas);
-
-        } catch(IOException | InterruptedException e){
-            e.printStackTrace();
-            return Collections.emptyList();
-        }
-    }
-
-    public void adicionar(Pessoa novaPessoa){
+    public void adicionar(Pessoa pessoa) {
+        EntityManager em = JPAUtil.getEntityManager();
         try {
-            String requestBody = gson.toJson(novaPessoa);
-
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(API_URL))
-                    .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-                    .build();
-
-            client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        } catch (IOException | InterruptedException e){
-            e.printStackTrace();
+            em.getTransaction().begin(); // Inicia a transação
+            em.persist(pessoa);          // Salva no banco
+            em.getTransaction().commit(); // Confirma a transação
+        } catch (Exception e) {
+            em.getTransaction().rollback(); // Desfaz se der erro
+            throw e;
+        } finally {
+            em.close(); // Sempre fechar o EntityManager
         }
     }
 
-    public void remover(String id){
-        try{
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(API_URL + "/" + id))
-                    .DELETE()
-                    .build();
+    public List<Pessoa> listarTodos() {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            // JPQL: "SELECT p FROM Pessoa p" (Pessoa é a Classe, não a tabela)
+            return em.createQuery("SELECT p FROM Pessoa p", Pessoa.class).getResultList();
+        } finally {
+            em.close();
+        }
+    }
 
-            client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        } catch (IOException | InterruptedException e){
-            e.printStackTrace();
+    // Note que agora recebemos Long id, não String id
+    public void remover(Long id) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            Pessoa pessoa = em.find(Pessoa.class, id); // Busca a pessoa pelo ID
+            if (pessoa != null) {
+                em.remove(pessoa); // Remove do banco
+            }
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            throw e;
+        } finally {
+            em.close();
         }
     }
 }

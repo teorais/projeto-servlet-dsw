@@ -15,6 +15,12 @@
 <body>
 
     <h2>Adicionar Nova Pessoa</h2>
+
+    <div style="text-align: right; padding: 10px;">
+        Olá, <b>admin</b>! | <a href="${pageContext.request.contextPath}/logout">Sair</a>
+    </div>
+    <h2>Adicionar Nova Pessoa</h2>
+
     <div class="form-container">
         <form action="pessoas?acao=adicionar" method="post">
             Nome: <input type="text" name="nome" required>
@@ -26,18 +32,19 @@
     <h2>Lista de Pessoas</h2>
     <table>
         <tr>
-            <th>ID</th>
-            <th>Nome</th>
+            <th>#</th> <th>Nome</th>
             <th>Email</th>
             <th>Ação</th>
         </tr>
         <%
             List<Pessoa> listaPessoas = (List<Pessoa>) request.getAttribute("listaPessoas");
             if (listaPessoas != null) {
+                int contador = 1; // Criamos um contador visual começando em 1
                 for (Pessoa p : listaPessoas) {
         %>
         <tr>
-            <td><%= p.getId() %></td>
+            <td><%= contador++ %></td>
+
             <td><%= p.getName() %></td>
             <td><%= p.getEmail() %></td>
             <td>

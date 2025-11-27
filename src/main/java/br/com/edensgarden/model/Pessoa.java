@@ -1,26 +1,42 @@
 package br.com.edensgarden.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Column;
+
+@Entity // Diz ao Hibernate que isso é uma tabela no banco
+@Table(name = "pessoas") // Define o nome da tabela no PostgreSQL
 public class Pessoa {
-    private String id;
+
+    @Id // Define que este campo é a Chave Primária (PK)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Diz ao banco para gerar o ID automaticamente (Auto-Increment)
+    private Long id; // Mudamos de String para Long para seguir o padrão relacional
+
+    @Column(nullable = false) // O nome é obrigatório
     private String name;
+
+    @Column(nullable = false, unique = true) // O email é obrigatório e não pode repetir
     private String email;
 
+    // CONSTRUTOR VAZIO: OBRIGATÓRIO para o Hibernate
+    public Pessoa() {
+    }
+
+    // Construtor para criarmos novas pessoas (sem ID, pois o banco gera)
     public Pessoa(String name, String email) {
         this.name = name;
         this.email = email;
     }
 
-    public Pessoa(String id, String name, String email) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-    }
-
-    public String getId() {
+    // Getters e Setters
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -43,7 +59,8 @@ public class Pessoa {
     @Override
     public String toString() {
         return "Pessoa{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 '}';
     }

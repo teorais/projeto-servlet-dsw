@@ -24,7 +24,7 @@ public class PessoaServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
 
-        // Pega o parâmetro 'acao' da URL. Ex: /pessoa?acao=remover
+        // Pega o parâmetro 'acao' da URL. Ex: /pessoas?acao=remover
         String acao = request.getParameter("acao");
 
         // Se nenhuma ação for especificada, a ação padrão é "listar"
@@ -49,8 +49,9 @@ public class PessoaServlet extends HttpServlet {
     private void listarPessoas(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        // O Hibernate busca a lista do banco
         List<Pessoa> listaDePessoas = pessoaRepository.listarTodos();
-        request.setAttribute("listaPessoas", listaDePessoas); // Envia a lista para o JSP
+        request.setAttribute("listaPessoas", listaDePessoas);
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("/views/listaPessoas.jsp");
         dispatcher.forward(request, response);
@@ -62,20 +63,29 @@ public class PessoaServlet extends HttpServlet {
         String nome = request.getParameter("nome");
         String email = request.getParameter("email");
 
+        // Cria o objeto Pessoa (sem ID, o banco gera)
         Pessoa novaPessoa = new Pessoa(nome, email);
+
+        // O Hibernate salva no banco
         pessoaRepository.adicionar(novaPessoa);
 
-        // Redireciona o usuário de volta para a página de listagem
+        // Redireciona para evitar reenvio do formulário ao atualizar (F5)
         response.sendRedirect("pessoas");
     }
 
     private void removerPessoa(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
-        String id = request.getParameter("id");
-        pessoaRepository.remover(id);
+        String idStr = request.getParameter("id");
 
-        // Redireciona o usuário de volta para a página de listagem
+        // CONVERSÃO NECESSÁRIA: De String (URL) para Long (Banco)
+        try {
+            Long id = Long.parseLong(idStr);
+            pessoaRepository.remover(id);
+        } catch (NumberFormatException e) {
+            System.out.println("Erro ao converter ID para remover: " + idStr);
+        }
+
         response.sendRedirect("pessoas");
     }
 }
