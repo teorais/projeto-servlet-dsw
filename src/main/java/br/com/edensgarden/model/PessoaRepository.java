@@ -17,7 +17,7 @@ public class PessoaRepository {
             em.getTransaction().rollback(); // Desfaz se der erro
             throw e;
         } finally {
-            em.close(); // Sempre fechar o EntityManager
+            em.close(); // Fecha o EntityManager
         }
     }
 
@@ -31,7 +31,6 @@ public class PessoaRepository {
         }
     }
 
-    // Note que agora recebemos Long id, não String id
     public void remover(Long id) {
         EntityManager em = JPAUtil.getEntityManager();
         try {

@@ -7,31 +7,28 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Column;
 
-@Entity // Diz ao Hibernate que isso é uma tabela no banco
-@Table(name = "pessoas") // Define o nome da tabela no PostgreSQL
+@Entity
+@Table(name = "pessoas")
 public class Pessoa {
 
-    @Id // Define que este campo é a Chave Primária (PK)
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Diz ao banco para gerar o ID automaticamente (Auto-Increment)
-    private Long id; // Mudamos de String para Long para seguir o padrão relacional
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(nullable = false) // O nome é obrigatório
+    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, unique = true) // O email é obrigatório e não pode repetir
+    @Column(nullable = false, unique = true)
     private String email;
 
-    // CONSTRUTOR VAZIO: OBRIGATÓRIO para o Hibernate
     public Pessoa() {
     }
 
-    // Construtor para criarmos novas pessoas (sem ID, pois o banco gera)
     public Pessoa(String name, String email) {
         this.name = name;
         this.email = email;
     }
 
-    // Getters e Setters
     public Long getId() {
         return id;
     }

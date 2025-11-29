@@ -80,7 +80,7 @@ public class PessoaServlet extends HttpServlet {
         response.sendRedirect("pessoas");
     }
 
-    // --- LÓGICA DO JASPER REPORTS ---
+    //JASPER REPORTS
     private void gerarRelatorio(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
         try {
@@ -90,7 +90,7 @@ public class PessoaServlet extends HttpServlet {
             // 2. Transformar em um DataSource do Jasper
             JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(lista);
 
-            // 3. Carregar o arquivo .jrxml
+            // 3. Carregar layout do arquivo .jrxml
             InputStream jrxmlStream = getClass().getResourceAsStream("/pessoas.jrxml");
             if (jrxmlStream == null) {
                 throw new RuntimeException("Arquivo pessoas.jrxml não encontrado em src/main/resources");
@@ -99,7 +99,7 @@ public class PessoaServlet extends HttpServlet {
             // 4. Compilar o relatório
             JasperReport jasperReport = JasperCompileManager.compileReport(jrxmlStream);
 
-            // 5. Preencher com os dados (Parâmetros = null por enquanto)
+            // 5. Preencher com os dados
             Map<String, Object> parametros = new HashMap<>();
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, dataSource);
 

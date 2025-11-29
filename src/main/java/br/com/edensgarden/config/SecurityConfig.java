@@ -14,8 +14,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // CONSTRUTOR PADRÃO (Implícito ou Explícito)
-    // Não adicione construtores com parâmetros aqui a menos que saiba configurar a injeção.
     public SecurityConfig() {
     }
 
